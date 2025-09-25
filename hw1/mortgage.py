@@ -119,3 +119,6 @@ def write_csv(fname, amortization_schedule, round_precision=2):
                     record.append(f"{value:0.{round_precision}f}")
             f.write(",".join(record) + "\n")
 
+
+schedule = amortize(0.07, 30, 500000, 3357.70)
+write_csv("amortization.csv", schedule)

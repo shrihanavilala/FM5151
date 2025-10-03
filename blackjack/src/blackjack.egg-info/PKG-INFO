@@ -1,0 +1,175 @@
+Metadata-Version: 2.4
+Name: blackjack
+Version: 0.0.1
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Provides-Extra: test
+Requires-Dist: pytest~=8.4.2; extra == "test"
+Requires-Dist: pytest-cov~=7.0.0; extra == "test"
+
+# Blackjack
+
+This package implements a simplified version of the card game *blackjack*, with
+just one dealer and one gambler. Blackjack is played in rounds. In each round a
+the gambler will place a bet, then play out the hand against the dealer. The
+dealer will deal two cards to each party, however only one of the dealer's cards
+will be showing. The end goal for the gambler is to have a hand totalling more
+points than the dealer's hand, but to not go over 21. Numbered cards are worth
+the number they show, and face cards and aces are worth 11 points (a
+simplification for aces). The gambler now has two choices:
+
+1. Stay at current hand total
+2. Repeatedly add cards to their hand (hit) to progress closer to 21 until they go
+   over 21 (go bust) or decide to stay
+
+If the gambler goes bust, they lose. The dealer takes the bet and the round is
+over. Otherwise, the dealer flips their card over. The dealer is required to
+repeatedly hit their hand while their hand totals < 17. If the dealer goes bust,
+the gambler wins the round and the dealer returns their bet and pays the amount
+of the bet. Otherwise, whoever has the highest total wins, or if both hands have
+the same value then it's a "wash" and the gambler receives their bet back.
+
+> NOTE:
+>
+> You can find more detailed rules of the game here
+> [here](https://bicyclecards.com/how-to-play/blackjack)
+
+Here are the simplifications we're making from the regular rules:
+
+- There are only two players, the dealer and the gambler. The user of the game
+  is playing as the gambler.
+- We'll only ever use a single 52 card deck
+- Ace cards are only worth 11, instead of the choice between 1 or 11
+- Splitting pairs, doubling down and insurance are not implemented
+
+## Installation
+
+Install in your Python environment using the following command
+
+```shell
+pip install -e ".[test]"
+```
+
+- The `-e` flag will install the files in editable ("develop") mode so you don't
+  have to keep reinstalling the package every time you update
+- The blackjack game itself has no dependencies, however, the `[test]`
+  dependencies can be installed to run the unit tests 
+
+## Running the game
+
+> NOTE: this is the output you'd expect once your game logic is fully
+> implemented
+
+You can play the game by invoking
+
+```shell
+blackjack
+```
+
+in your shell. It should greet you with something like this:
+
+```text
+---------
+Blackjack
+---------
+Welcome to Blackjack!
+You can exit this game at any time by hitting Ctrl+C
+How many chips would you like to buy?
+> 
+```
+
+put in a number for how many chips to buy. Then the rounds will begin. At the
+beginning of each round, decide on your bet:
+
+```
+-------
+Round 1
+-------
+Decide bet
+How much to bet? (cash=100)?
+> 5
+```
+
+If you're dealt something < 21 you'll be prompted whether to hit or stay.
+
+```
+Play hand
+The dealer face up card is: [Queen ♦️ ]
+Current hand: [Ace ❤️ ] [8 ❤️ ]  (value=19)
+What would you like to do? (hit/stay)
+> stay
+```
+
+After the round is complete, you'll get your results
+
+```
+Round is complete
+Round 1 Result: (Gambler has the better hand! 😊)
+        Gambler hand: [Ace ❤️ ] [8 ❤️ ]  (19 -> 19)
+        Dealer hand: [Queen ♦️ ] [7 ♠️ ]  (17 -> 17)
+        Cash after bet: 105
+```
+
+and can move onto the next round until you run out of money or decide you've had
+enough.
+
+## Developing the game
+
+All the interfaces are provided to you (i.e. how the callables will be defined)
+however implementation details are missing. You'll fill in the missing pieces in
+the `src` folder.
+
+## Testing the game
+
+You can test your implementation by running
+
+```shell
+pytest
+```
+
+from your shell. If all your tests are passing you should see a bunch of green
+dots
+
+```text
+configfile: pyproject.toml
+plugins: anyio-4.10.0, cov-7.0.0
+collected 28 items                                                                                                                               
+
+tests/test_card.py ......                                                                                                                  [ 21%]
+tests/test_deck.py ....                                                                                                                    [ 35%]
+tests/test_game.py .........                                                                                                               [ 67%]
+tests/test_hand.py ..                                                                                                                      [ 75%]
+tests/test_player.py .......                                                                                                               [100%]
+
+=============================================================== 28 passed in 0.05s ===============================================================
+```
+
+failures will be explained in more depth.
+
+If the output is too overwhelming, you can run tests in a single file with
+
+```shell
+pytest tests/test_card.py
+```
+
+for example, or even a single test with
+
+```shell
+pytest tests/test_card.py::test_card_init_unique_indexes
+```
+
+where `test_card_init_unique_indexes` is the name of a function in the test
+suite.
+
+You can also use VS Code to visualize these by selecting the icon that looks
+like a vial, and configuring tests. You'll then be able to view your tests in
+your VS Code sidebar.
+
+If you're curious, you can generate a code coverage report by running
+
+```shell
+pytest --cov=src --cov-report=html
+```
+
+Drag and drop the generated index.html into your browser and you can view which
+portions of your code are hit.

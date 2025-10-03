@@ -1,0 +1,5 @@
+{
+    "a_config_string": "value1",
+    "some_list": [8, 7, 6, 5, 3, 0, 9],
+    "a_timestamp": "2025-01-01T08:30:00"
+}
